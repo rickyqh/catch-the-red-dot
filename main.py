@@ -6,7 +6,6 @@ Python with Turtle lets you make graphics easily in Python.
 Check out the official docs here: https://docs.python.org/3/library/turtle.html
 """
 #import
-from pickle import FALSE
 import turtle
 import random
 import time
