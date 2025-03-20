@@ -6,12 +6,13 @@ Python with Turtle lets you make graphics easily in Python.
 Check out the official docs here: https://docs.python.org/3/library/turtle.html
 """
 #import
+from pickle import FALSE
 import turtle
 import random
 import time
 #initialize screen
 screen = turtle.getscreen()
-screen.setup(400, 400)
+screen.setup(1000,1000)
 screen.title("This is your screen title")
 screen.bgcolor("blue")
 #initialize turtle
@@ -26,14 +27,18 @@ dot.color("red")
 dot.speed(0)
 dot.penup()
 #initialize timer
-timer=turtle.Turtle()
-timer.hideturtle()
-timer.color("black")
-timer.speed(0)
-timer.penup()
-timer.goto(0,220)
 
-countdown = 100
+game_active = True
+
+timer_display=turtle.Turtle()
+timer_display.hideturtle()
+timer_display.color("black")
+timer_display.speed(0)
+timer_display.penup()
+timer_display.goto(0,220)
+
+timer_value = 600
+
 #initialize score
 score =turtle.Turtle()
 score.penup()
@@ -43,9 +48,10 @@ score.goto(0,-220)
 score.color("black")
 point=0
 #uptate score and timer
-def update_timer():
-    timer.clear()
-    timer.write(f"timer:{countdown} seconds",align='center',font=('Ariel',16))
+# def update_timer():
+#     timer.clear()
+#     timer.write(f"timer:{countdown} seconds",align='center',font=('Ariel',16))
+
 def update_score():
     score.clear()
     score.write(f"score:{point}",align='center',font=('Arial',16))
@@ -79,36 +85,47 @@ def move_left():
         turt.setx(x-10)
 
 screen.listen()
-screen.onkeypress(move_up,"w")
-screen.onkeypress(move_down,"s")
-screen.onkeypress(move_left,"a")
-screen.onkeypress(move_right,"d")
+screen.onkey(move_up,"w")
+screen.onkey(move_down,"s")
+screen.onkey(move_left,"a")
+screen.onkey(move_right,"d")
 
-screen.onkeypress(move_up,"Up")
-screen.onkeypress(move_down,"Down")
-screen.onkeypress(move_left,"Left")
-screen.onkeypress(move_right,"Right")
+screen.onkey(move_up,"Up")
+screen.onkey(move_down,"Down")
+screen.onkey(move_left,"Left")
+screen.onkey(move_right,"Right")
+
+def countdown(time_left):
+    global game_active
+    timer_display.clear()
+    if time_left>0:
+        timer_display.write(f'time left: {time_left}', align="center", font=("Courier",24,"normal"))
+        screen.ontimer(lambda: countdown(time_left - 1),1000)
+    else:
+        game_active=False
+        timer_display.write("Game Over", align="center", font=("Courier",24,"normal"))
+
 #scoring
-while(True):
+countdown(60)
+while(game_active):
     screen.update()
     turt.color("orange")
-    if countdown>0:
-        countdown-=1
-        update_timer()
-        if turt.distance(dot) < 20:
-            turt.color("green")
-            point+=1
-            update_score()
-            x=random.randint(-200,200)
-            y=random.randint(-200,200)
-            dot.goto(x,y)
+    if turt.distance(dot) < 20:
+        turt.color("green")
+        point+=1
+        update_score()
+        x=random.randint(-200,200)
+        y=random.randint(-200,200)
+        dot.goto(x,y)
 
-    else:
-        dot.hideturtle()
-        turt.hideturtle()
-        score.clear()
-        score.goto(0,0)
-        score.write(f"Game Over😝score:{point}",align='center',font=('Arial',16))
-        break
+turt.hideturtle()
+
+    # else:
+    #     dot.hideturtle()
+    #     turt.hideturtle()
+    #     score.clear()
+    #     score.goto(0,0)
+    #     score.write(f"Game Over😝score:{point}",align='center',font=('Arial',16))
+    #     break
 
 input("Enter to stop: ")
